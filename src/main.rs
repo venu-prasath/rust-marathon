@@ -1,3 +1,6 @@
+use std::fs::read_to_string;
+use chrono::{Local, Utc};
+
 fn main() {
     let ans = is_even(2100000000);
     println!("{}", ans);
@@ -25,6 +28,9 @@ fn main() {
        Some(value) => println!("Index is {}", value),
        None => println!("Index not found"), 
     }
+
+    read_from_file();
+    using_chrono();
 }
 
 fn is_even(num: i32) -> bool {
@@ -111,4 +117,29 @@ fn find_first_a(s: String) -> Option<i32> {
         }
     }
     return None;
+}
+
+fn read_from_file() {
+    let greetings_file_result = read_to_string("he.txt");
+
+    match greetings_file_result {
+        Ok(file_content) => {
+            println!("File read successfully: {:?}", file_content);
+        }
+        Err(error) => {
+            println!("Failed to read file: {:?}", error);
+        }
+    }
+}
+
+
+fn using_chrono() {
+    let now = Utc::now();
+    println!("Current date and time in UTC: {}", now);
+
+    let formatted = now.format("%Y-%m-%d %H:%M:%S");
+    println!("Formatted date and time is: {}", formatted);
+
+    let local = Local::now();
+    println!("Current local time is: {}", local);
 }
