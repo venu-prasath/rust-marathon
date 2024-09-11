@@ -1,4 +1,4 @@
-use std::fs::read_to_string;
+use std::{collections::HashMap, fs::read_to_string};
 use chrono::{Local, Utc};
 
 fn main() {
@@ -32,6 +32,8 @@ fn main() {
     read_from_file();
     using_chrono();
     using_vectors();
+    using_hashmaps();
+    using_iterators();
 }
 
 fn is_even(num: i32) -> bool {
@@ -162,4 +164,68 @@ fn even_filter(vec: &Vec<i32>) -> Vec<i32> {
         }
     }
     return new_vec;
+}
+
+fn using_hashmaps() {
+    let mut users: HashMap<String, u32> = HashMap::new();
+
+    users.insert(String::from("John"), 22);
+    users.insert(String::from("Doe"), 15);
+
+    let first_user_age = users.get("John");
+    match first_user_age {
+        Some(age) => println!("First user age is: {}", age),
+        None => println!("User not found!"),
+    };
+    let input_vec = vec![(String::from("John"), 22), (String::from("Doe"), 32)];
+    let hm = group_value_by_keys(input_vec);
+    println!("{:?}", hm);
+}
+
+fn group_value_by_keys(vec: Vec<(String, u32)>) -> HashMap<String, u32> {
+    let mut hm = HashMap::new();
+    for (key, val) in vec {
+        hm.insert(key, val);
+    }
+
+    return hm;
+}
+
+fn using_iterators() {
+    let mut v1 = vec![1, 2, 3, 4, 5];
+    let v1_iter = v1.iter();
+
+    // for val in v1_iter {
+    //     println!("{}", val);
+
+    // }
+    let sum: i32 = v1_iter.sum();
+    println!("{:?}, Sum: {}", v1, sum);
+
+    let mut v1_iter_mut = v1.iter_mut();
+
+    // for val in v1_iter_mut {
+    //     *val = *val + 1;
+    // }
+    // println!("{:?}", v1);
+
+    while let Some(val) = v1_iter_mut.next() {
+        println!("{}", val);
+    }
+
+    let v2 = vec![1,2,3,4,5];
+    let v2_iter = v2.iter();
+
+    let v2_iter2 = v2_iter.map(|x| x+1);
+    for i in v2_iter2 {
+        println!("{i}");
+    }
+    let v3 = vec![1,2,3,4,5,6];
+    let v3_iter = v3.iter();
+    let v3_iter3 = v3_iter.filter(|x| *x % 2 == 0);
+    for i in v3_iter3 {
+        println!("{i}");
+    }
+
+    println!("{:?}", v2);
 }
