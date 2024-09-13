@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fs::read_to_string};
+use std::{collections::HashMap, fs::read_to_string, sync::mpsc, thread};
 use chrono::{Local, Utc};
 
 fn main() {
@@ -34,6 +34,11 @@ fn main() {
     using_vectors();
     using_hashmaps();
     using_iterators();
+    using_strings_and_slices();
+    use_traits();
+    use_lifetimes();
+    using_threads();
+    using_channels();
 }
 
 fn is_even(num: i32) -> bool {
@@ -228,4 +233,83 @@ fn using_iterators() {
     }
 
     println!("{:?}", v2);
+}
+
+fn using_strings_and_slices() {
+    let mut name = String::from("John Doe");
+    name.push_str("dove");
+    println!("Name is {}", name);
+    name.replace_range(3..name.len(), "");
+    println!("name is {}", name);
+    let mut new_name = String::from("John Doe");
+    let ans = &new_name[0..4];
+    println!("slice is {}", ans);
+}
+
+pub trait Summary {
+    fn summarize(&self) -> String;
+}
+
+struct Profile {
+    name: String,
+    age: u32,
+}
+
+impl Summary for Profile {
+    fn summarize(&self) -> String {
+        return format!("The name is {}. Age is {}.", self.name, self.age);
+    }
+}
+
+fn use_traits() {
+    let profile = Profile {
+        name: String::from("John Doe"),
+        age: 21,
+    };
+
+    println!("{}", profile.summarize());
+    notify(&profile);
+}
+
+fn notify(profile: &impl Summary) {
+    println!("{}", profile.summarize());
+}
+
+struct User2<'a> {
+    name: &'a str,
+}
+
+fn use_lifetimes() {
+    let name = String::from("Joh Wick");
+    let user2 = User2 {
+        name: &name
+    };
+    print!("{}", user2.name);
+}
+
+
+fn using_threads() {
+    thread::spawn(|| {
+        for i in 0..5 {
+            println!("Hi from spawned thread {}", i);
+        }
+    });
+
+    for i in 0..20 {
+        println!("Hi from main thread {} ", i);
+    }
+}
+
+fn using_channels() {
+    let (tx, rx) = mpsc::channel();
+
+    let prod = tx.clone();
+    thread::spawn(move || {
+        let val = String::from("Hi");
+        prod.send(val).unwrap();
+    });
+    drop(tx);
+
+    let received = rx.recv().unwrap();
+    println!("Got: {received}");
 }
